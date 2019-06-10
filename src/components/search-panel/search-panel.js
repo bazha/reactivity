@@ -1,5 +1,5 @@
 import React from 'react';
-
+import './search-panel.css'
 const SearchPanel = () => {
 
     const searchText = 'Type here to search';
@@ -8,6 +8,7 @@ const SearchPanel = () => {
     };
     return (
       <input 
+      className='search-input'
       placeholder={searchText} 
       style={searchSyle}
       />
