@@ -11,7 +11,6 @@ const TodoListItem = (props) =>  {
 
   if (important){
     classNames += ' important';
-
   }
 
   return (

@@ -11,10 +11,19 @@ export default class App extends Component {
 
   state = {
     todoData: [
-      {label: 'Drink cofee', important: false, id:1},
-      {label: 'Make awasome app', important: true, id:2},
-      {label: 'Have a lunch', important: false, id:3},
+      this.createTodoItem('Drink cofee'),
+      this.createTodoItem('Make awasome app'),
+      this.createTodoItem('Have a lunch'),
     ]
+  }
+
+  createTodoItem(label) {
+    return {
+      label,
+      important: false,
+      done: false,
+      id: this.maxId++,
+    }
   }
 
   deleteItem = (id) => {
@@ -31,11 +40,7 @@ export default class App extends Component {
   }
 
   addItem = (text) => {
-    const newItem = {
-     label: text,
-     important: false,
-     id: this.maxId++,
-    }
+    const newItem = this.createTodoItem(text);
 
     this.setState(({todoData}) => {
       const newArr = [
@@ -49,18 +54,44 @@ export default class App extends Component {
     })
   }
 
+  toggleProperty(arr, id, propName) {
+    const idx = arr.findIndex(el => el.id === id);
+      const oldItem = arr[idx];
+      const newItem = {
+        ...oldItem, 
+        [propName]: !oldItem[propName]}
+      return [
+          ...arr.slice(0, idx),
+          newItem,
+          ...arr.slice(idx + 1)
+      ];
+  }
+
   onToggleImportant = (id) => {
-    console.log('important', id);
+    this.setState(({ todoData }) => {
+      return {
+        todoData: this.toggleProperty(todoData, id, 'important')
+      }
+    })
   }
 
   onToggleDone = (id) => {
-    console.log('done', id);
+    this.setState(({ todoData }) => {
+      return {
+        todoData: this.toggleProperty(todoData, id, 'done')
+      }
+    })
   }
+
+
   render() {
     const { todoData } = this.state;
+    const doneCount = todoData.filter(el => el.done).length;
+    const todoCount = todoData.length - doneCount;
+
     return (
       <div>
-      <AppHeader />
+      <AppHeader  toDo={todoCount} done={doneCount}/>
       <SearchPanel />
       <ItemStatusFilter />
       <TodoList 
